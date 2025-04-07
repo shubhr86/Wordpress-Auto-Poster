@@ -1,0 +1,8 @@
+pandas
+requests
+beautifulsoup4
+pytz
+nltk
+pillow
+openai
+wordpress-xmlrpc
