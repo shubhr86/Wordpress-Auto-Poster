@@ -24,10 +24,9 @@ nltk.download('stopwords')
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # WordPress Credentials
-WP_URL = "https://news47.us/xmlrpc.php"
-WP_USERNAME = "shubhr861"
-WP_PASSWORD = "3qE6 rhh0 UZgV 7tlW LaG3 CPwk"
-
+WP_URL = os.getenv("WP_URL")
+WP_USERNAME = os.getenv("WP_USERNAME")
+WP_PASSWORD = os.getenv("WP_PASSWORD")
 
 # Paths and Files
 CSV_PATH = "generated_articles.csv"
