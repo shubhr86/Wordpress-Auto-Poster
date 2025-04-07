@@ -5,4 +5,4 @@ pytz
 nltk
 pillow
 openai
-wordpress-xmlrpc
+git+https://github.com/maxcutler/python-wordpress-xmlrpc.git
