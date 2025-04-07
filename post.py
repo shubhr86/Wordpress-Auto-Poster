@@ -35,8 +35,8 @@ SCHEDULE_FILE = "schedule.json"  # Track last scheduled date
 IMAGE_SAVE_PATH = "images"
 
 #APIs For Image Search
-GOOGLE_API_KEY = "AIzaSyD01ZCgIzGXTi1W_X8JO6EEJ91yBGYmjbo"
-SEARCH_ENGINE_ID = "23da31fb3236c4062"
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 GOOGLE_SEARCH_URL = "https://www.googleapis.com/customsearch/v1"
 
 # Load schedule tracking file
