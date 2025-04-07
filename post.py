@@ -130,6 +130,8 @@ def fetch_or_generate_images(topic):
                 sanitized_topic = "".join(c for c in topic if c.isalnum() or c in " _-")
                 img_name = f"{sanitized_topic[:90].replace(' ', '_')}_{index+1}.{img_format}"
                 img_path = os.path.join("images", img_name)
+                # Ensure "images" folder exists
+                os.makedirs("images", exist_ok=True)
                 img.save(img_path, img_format.upper())
 
                 print(f"✅ Image saved: {img_path} ({width}x{height})")
