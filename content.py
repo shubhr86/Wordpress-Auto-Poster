@@ -11,8 +11,8 @@ from openai import AsyncOpenAI
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Set API Keys
-OPENROUTER_API_KEY = "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"
-HYPERBOLIC_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcmVlbW92aWU5LmNvbUBnbWFpbC5jb20iLCJpYXQiOjE3NDE2MTcxNDl9.0yirUVjAYGTbuFCQjLa9Z8FV8SXwmcxCO8tZlHNIBXE"
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+HYPERBOLIC_API_KEY = os.getenv("HYPERBOLIC_API_KEY")
 
 # Choose models (fallback if one fails)
 MODELS = [
