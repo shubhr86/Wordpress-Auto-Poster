@@ -51,6 +51,11 @@ def main():
 
     logging.info("✅ Workflow completed successfully!")
     os.remove(PROGRESS_FILE)  # Cleanup after success
+    
+logging.info(f"📂 Current working directory: {os.getcwd()}")
+logging.info(f"📄 Files in current directory: {os.listdir('.')}")
+logging.info(f"📁 Subdirectories and contents in 'images': {os.listdir('images') if os.path.exists('images') else 'Not Found'}")
+
 
 if __name__ == "__main__":
     main()
