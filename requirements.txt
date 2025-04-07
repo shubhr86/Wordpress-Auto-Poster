@@ -92,7 +92,7 @@ PyMsgBox==1.0.9
 pyparsing==3.2.1
 pyperclip==1.9.0
 pypi-xmlrpc==2020.12.3
-pyppeteer==2.0.0
+pyppeteer
 pyquery==2.0.1
 PyRect==0.2.0
 PyScreeze==1.0.1
@@ -104,10 +104,10 @@ pytz==2025.1
 pyunormalize==16.0.0
 PyYAML==6.0.2
 regex==2024.11.6
-requests==2.32.3
-requests-html==0.10.0
-requests-oauthlib==2.0.0
-requests-toolbelt==1.0.0
+requests
+requests-html
+requests-oauthlib
+requests-toolbelt
 rich==13.9.4
 rlp==4.1.0
 rsa==4.9
@@ -132,7 +132,7 @@ torch==2.6.0
 tqdm==4.67.1
 transformers==4.50.3
 typer==0.15.2
-types-requests==2.32.0.20241016
+types-requests
 typing_extensions==4.12.2
 tzdata==2025.1
 uritemplate==4.1.1
