@@ -24,10 +24,9 @@ nltk.download('stopwords')
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # WordPress Credentials
-WP_URL = "https://news47.us/xmlrpc.php"
-WP_USERNAME = "shubhr861"
-WP_PASSWORD = "3qE6 rhh0 UZgV 7tlW LaG3 CPwk"
-
+WP_URL = os.getenv("WP_URL")
+WP_USERNAME = os.getenv("WP_USERNAME")
+WP_PASSWORD = os.getenv("WP_PASSWORD")
 
 # Paths and Files
 CSV_PATH = "generated_articles.csv"
@@ -36,8 +35,8 @@ SCHEDULE_FILE = "schedule.json"  # Track last scheduled date
 IMAGE_SAVE_PATH = "images"
 
 #APIs For Image Search
-GOOGLE_API_KEY = "AIzaSyD01ZCgIzGXTi1W_X8JO6EEJ91yBGYmjbo"
-SEARCH_ENGINE_ID = "23da31fb3236c4062"
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 GOOGLE_SEARCH_URL = "https://www.googleapis.com/customsearch/v1"
 
 # Load schedule tracking file
