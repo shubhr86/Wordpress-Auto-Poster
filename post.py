@@ -125,8 +125,8 @@ def fetch_or_generate_images(topic):
             img = Image.open(BytesIO(img_response.content))
             width, height = img.size
 
-            # ✅ Filter images strictly: Minimum 600x300 resolution
-            if width >= 500 and height >= 250:
+            # ✅ Filter images strictly: Minimum 496x496 resolution
+            if width >= 496 and height >= 350:
                 sanitized_topic = "".join(c for c in topic if c.isalnum() or c in " _-")
                 img_name = f"{sanitized_topic[:90].replace(' ', '_')}_{index+1}.{img_format}"
                 img_path = os.path.join("images", img_name)
