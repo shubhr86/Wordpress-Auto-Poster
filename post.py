@@ -76,7 +76,7 @@ headers = {
 }
 
 # Connect to WordPress
-client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, context=ssl_context)
+client = Client(WP_URL, WP_USERNAME, WP_PASSWORD)
 
 client.headers = headers 
 
