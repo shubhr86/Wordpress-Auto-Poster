@@ -6,6 +6,7 @@ import time
 import json
 import base64
 import logging
+import ssl
 import xmlrpc.client
 import subprocess
 from PIL import Image
@@ -17,6 +18,11 @@ from wordpress_xmlrpc.methods.posts import NewPost
 from wordpress_xmlrpc.methods.media import UploadFile
 from wordpress_xmlrpc.methods.taxonomies import GetTerms
 from wordpress_xmlrpc.methods.posts import EditPost
+
+
+# Force TLS 1.2 or later
+ssl_context = ssl.create_default_context()
+ssl_context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1  # Disable older TLS versions
 
 nltk.download('stopwords')
 
@@ -70,7 +76,8 @@ headers = {
 }
 
 # Connect to WordPress
-client = Client(WP_URL, WP_USERNAME, WP_PASSWORD)
+client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, context=ssl_context)
+
 client.headers = headers 
 
 def get_next_schedule_date():
@@ -105,7 +112,7 @@ def fetch_or_generate_images(topic):
             "safe": "active",
             "imgSize": size
         }
-        response = requests.get(GOOGLE_SEARCH_URL, params=params)
+        response = requests.get(GOOGLE_SEARCH_URL, params=params, verify=True)  # Ensure SSL verification
         response.raise_for_status()
         return response.json()
 
