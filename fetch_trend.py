@@ -48,7 +48,7 @@ def get_trending_topics(url):
                 })
 
         # Sort topics by traffic in descending order and return top 12
-        return sorted(topics, key=lambda x: x["traffic"], reverse=True)[:2]
+        return sorted(topics, key=lambda x: x["traffic"], reverse=True)[:12]
     except Exception as e:
         logging.error(f"❌ Error fetching trends from {url}: {str(e)}")
         return []
