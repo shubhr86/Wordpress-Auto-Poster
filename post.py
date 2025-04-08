@@ -203,17 +203,10 @@ def generate_tags(title, topic):
     filtered_words = [word for word in words if word not in stopwords.words('english') and len(word) > 3]  
     return list(set(filtered_words))  # Remove duplicates
 
+
 # ✅ Schedule Post Function
-def schedule_post(title, content, category, tags, images, schedule_date, time_slot):
+def schedule_post(title, content, category, tags, uploaded_image_ids, uploaded_image_urls, schedule_date, time_slot):
     """Schedule a post on WordPress."""
-
-    # ✅ Upload images and store IDs and URLs
-    uploaded_images = [upload_image(img) for img in images if img]
-    uploaded_images = [(img_id, img_url) for img_id, img_url in uploaded_images if img_id]
-
-    # ✅ Separate Image IDs and URLs
-    uploaded_image_ids = [img[0] for img in uploaded_images]
-    uploaded_image_urls = [img[1] for img in uploaded_images]
 
     post = WordPressPost()
     post.title = title
@@ -222,18 +215,19 @@ def schedule_post(title, content, category, tags, images, schedule_date, time_sl
     post.terms_names = {"category": [category], "post_tag": tags}
     post.date = datetime.datetime.combine(schedule_date, time_slot)
 
-    # ✅ Set Featured Image (Only if an image was uploaded)
+    # ✅ Set Featured Image (Use Already Uploaded Image)
     if uploaded_image_ids:
-        post.thumbnail = uploaded_image_ids[0]  # ✅ Fix: Use ID, not URL
+        post.thumbnail = uploaded_image_ids[0]
         print(f"✅ Featured Image ID: {uploaded_image_ids[0]}")
 
     post_id = client.call(NewPost(post))
 
-    # ✅ Update post to confirm featured image is set
+    # ✅ Ensure Featured Image is Set
     if uploaded_image_ids:
-        client.call(EditPost(post_id, {'post_thumbnail': uploaded_image_ids[0]}))  # Ensures featured image is correctly assigned
+        client.call(EditPost(post_id, {'post_thumbnail': uploaded_image_ids[0]}))
 
     return post_id
+
 
 # ✅ Main Function
 def main():
@@ -265,14 +259,15 @@ def main():
 
         # ✅ Upload Images and Store URLs
         # ✅ Upload Images and Store ID & URL
+        print(f"📸 Images to upload: {images}")
         uploaded_images = [upload_image(img) for img in images if img]
         uploaded_images = [(img_id, img_url) for img_id, img_url in uploaded_images if img_id]
+        print(f"🔼 Uploaded Images: {uploaded_images}")
 
-        # ✅ Separate Image IDs and URLs
+        # Extract only image IDs for featured image
         uploaded_image_ids = [img[0] for img in uploaded_images]
         uploaded_image_urls = [img[1] for img in uploaded_images]
-
-        # ✅ Skip if No Image Upload Was Successful
+                # ✅ Skip if No Image Upload Was Successful
         if not uploaded_image_urls:
             print(f"❌ No valid images uploaded for: {title}. Skipping this article.")
             continue
@@ -293,7 +288,7 @@ def main():
 
 
         # ✅ Schedule Post
-        post_id = schedule_post(title, article, category, tags, images, next_schedule_date, time_slots[scheduled_count])
+        post_id = schedule_post(title, article, category, tags, uploaded_image_ids, uploaded_image_urls, next_schedule_date, time_slots[scheduled_count])
         print(f"✅ Scheduled: {title} on {next_schedule_date} at {time_slots[scheduled_count]} (Post ID: {post_id})")
 
         # ✅ Log Scheduled Post
@@ -302,3 +297,4 @@ def main():
             json.dump(log_data, log_file)
 
         scheduled_count += 1
+
