@@ -71,7 +71,7 @@ $ cd Wordpress-Auto-Poster
 $ pip install -r requirements.txt
 ```
 
-### 3. Change these in the code
+### 3. Change these in the code or use .env
 ```sh
 OPENROUTER_API_KEY=your_openrouter_api_key
 HYPERBOLIC_API_KEY=your_hyperbolic_api_key
