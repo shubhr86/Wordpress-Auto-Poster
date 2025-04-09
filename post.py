@@ -98,7 +98,7 @@ headers = {
 client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, transport=SSLTransport(ssl_context))
 
 # ✅ Apply SSL context to ensure secure connection
-client.transport.ssl_context = ssl_context
+#client.transport.ssl_context = ssl_context
 
 client.headers = headers 
 
