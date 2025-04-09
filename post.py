@@ -29,11 +29,18 @@ ssl_context.options |= ssl.OP_NO_TLSv1_1
 ssl_context.check_hostname = False  # Helps avoid hostname mismatches
 ssl_context.verify_mode = ssl.CERT_OPTIONAL  # Loosen strict SSL verification
 
-# ✅ Create a Custom Transport Class for SSL
-class SSLTransport(xmlrpc.client.Transport):
+# ✅ Corrected SSLTransport class
+class SSLTransport(xmlrpc.client.SafeTransport):
+    def __init__(self, context=None):
+        super().__init__()
+        self.context = context or ssl.create_default_context()
+
     def make_connection(self, host):
+        # ✅ Ensure connection is correctly established
         conn = super().make_connection(host)
-        conn.sock = ssl_context.wrap_socket(conn.sock, server_hostname=host)
+        sock = conn.sock
+        if sock:
+            conn.sock = self.context.wrap_socket(sock, server_hostname=host)
         return conn
 
 nltk.download('stopwords')
@@ -88,7 +95,7 @@ headers = {
 }
 
 # ✅ Initialize WordPress client with SSL transport
-client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, transport=SSLTransport())
+client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, transport=SSLTransport(ssl_context))
 
 # ✅ Apply SSL context to ensure secure connection
 client.transport.ssl_context = ssl_context
