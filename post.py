@@ -35,13 +35,12 @@ class SSLTransport(xmlrpc.client.SafeTransport):
         super().__init__()
         self.context = context or ssl.create_default_context()
 
-    def make_connection(self, host):
-        # ✅ Ensure connection is correctly established
-        conn = super().make_connection(host)
-        sock = conn.sock
-        if sock:
-            conn.sock = self.context.wrap_socket(sock, server_hostname=host)
-        return conn
+def make_connection(self, host):
+    conn = super().make_connection(host)
+    if conn.sock and not isinstance(conn.sock, ssl.SSLSocket):
+        conn.sock = self.context.wrap_socket(conn.sock, server_hostname=host)
+    return conn
+
 
 nltk.download('stopwords')
 
@@ -99,7 +98,7 @@ client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, transport=SSLTransport(ssl_con
 
 # ✅ Apply SSL context to ensure secure connection
 #client.transport.ssl_context = ssl_context
-
+client.transport.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 client.headers = headers 
 
 
