@@ -20,28 +20,6 @@ from wordpress_xmlrpc.methods.taxonomies import GetTerms
 from wordpress_xmlrpc.methods.posts import EditPost
 
 
-# ✅ Force TLS 1.2+ and relax strict SSL verification
-ssl_context = ssl.create_default_context()
-ssl_context.options |= ssl.OP_NO_SSLv2
-ssl_context.options |= ssl.OP_NO_SSLv3
-ssl_context.options |= ssl.OP_NO_TLSv1
-ssl_context.options |= ssl.OP_NO_TLSv1_1
-ssl_context.check_hostname = False  # Helps avoid hostname mismatches
-ssl_context.verify_mode = ssl.CERT_OPTIONAL  # Loosen strict SSL verification
-
-# ✅ Corrected SSLTransport class
-class SSLTransport(xmlrpc.client.SafeTransport):
-    def __init__(self, context=None):
-        super().__init__()
-        self.context = context or ssl.create_default_context()
-
-def make_connection(self, host):
-    conn = super().make_connection(host)
-    if conn.sock and not isinstance(conn.sock, ssl.SSLSocket):
-        conn.sock = self.context.wrap_socket(conn.sock, server_hostname=host)
-    return conn
-
-
 nltk.download('stopwords')
 
 # Configure logging
@@ -94,11 +72,8 @@ headers = {
 }
 
 # ✅ Initialize WordPress client with SSL transport
-client = Client(WP_URL, WP_USERNAME, WP_PASSWORD, transport=SSLTransport(ssl_context))
+client = Client(WP_URL, WP_USERNAME, WP_PASSWORD)
 
-# ✅ Apply SSL context to ensure secure connection
-#client.transport.ssl_context = ssl_context
-client.transport.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 client.headers = headers 
 
 
@@ -201,36 +176,24 @@ def fetch_or_generate_images(topic):
         print(f"❌ Error fetching images for {topic}: {e}")
         return None
 
-def upload_image(image_path, retries=3):
+def upload_image(image_path):
     """Upload an image to WordPress and return its URL."""
-    for attempt in range(retries):
-        try:
-            with open(image_path, "rb") as img_file:
-                data = {
-                    'name': os.path.basename(image_path),
-                    'type': 'image/jpeg',
-                    'bits': xmlrpc.client.Binary(img_file.read()),  # Convert to binary format
-                }
-            
-            response = client.call(UploadFile(data))
-
-            if response:
-                print(f"✅ Image uploaded successfully: {response['url']} (ID: {response['id']})")
-                return response["id"], response["url"]
-        
-        except xmlrpc.client.ProtocolError as e:
-            print(f"⚠️ Attempt {attempt+1} failed: Protocol Error - {e.errmsg}")
-        except xmlrpc.client.Fault as e:
-            print(f"⚠️ Attempt {attempt+1} failed: XML-RPC Fault - {e.faultString}")
-        except ssl.SSLError as e:
-            print(f"⚠️ Attempt {attempt+1} failed: SSL Error - {str(e)}")
-        except Exception as e:
-            print(f"⚠️ Attempt {attempt+1} failed: Unexpected Error - {str(e)}")
-        
-        time.sleep(5)  # Wait before retrying
+    with open(image_path, "rb") as img_file:
+        data = {
+            'name': os.path.basename(image_path),
+            'type': 'image/jpeg',
+            'bits': img_file.read(),
+        }
     
-    print(f"❌ Image upload failed after {retries} attempts: {image_path}")
-    return None
+    response = client.call(UploadFile(data))
+    
+    if response:
+        print(f"✅ Image uploaded successfully: {response['url']} (ID: {response['id']})")
+        return response["id"], response["url"]
+    else:
+        print(f"❌ Image upload failed: {image_path}")
+        return None
+
 
 def generate_tags(title, topic):
     """Generate meaningful tags from title and topic"""
